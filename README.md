@@ -88,100 +88,29 @@ public class RollerAgent : Agent
 ```
 Коэффициент корреляции можно найти в методе OnActionReceived и равен он 1.42f (рис).
 ![image](https://github.com/ManualCode/DA-in-GameDev5/assets/120582775/f7396d71-f0dd-4ce4-b191-825c4a712d2b)
-Меняя это значение, можно понять, что коэффициент корреляции определяет, на каком расстоянии от цели агент будет считаться успешным. Чем он больше, тем быстрее обучается модель, но при этом менее точно будет достигаться цель, чем меньше, тем 
- более точное и медленое обучение.
+Меняя это значение, можно понять, что коэффициент корреляции определяет на каком расстоянии должны находиться объект и цель, чтобы получить награду. Чем он больше, тем быстрее обучается модель, но при этом менее точно будет достигаться цель, чем меньше, тем более точное и медленое обучение.
 
 ## Задание 2
-### Построить графики зависимости количества эпох от ошибки обучения. Указать от чего зависит необходимое количество эпох обучения.
+### Изменить параметры файла yaml-агента и определить какие параметры и как влияют на обучение модели. Привести описание не менее трех параметров.
 
 Ход работы:
-- Я заполнил Google-Таблицу данными об эпохах и визуализировал их с помощью графиков.
-
-1. OR (Логическое сложение(ИЛИ)):
-
-![image](https://github.com/ManualCode/DA-in-GameDev-lab4/assets/120582775/69ca3a81-38cb-440b-9e12-c61f3b973d93)
-
-2. AND (Логическое умножение(И)):
-
-![image](https://github.com/ManualCode/DA-in-GameDev-lab4/assets/120582775/a5c541a4-c52d-4ac7-b89d-7016fe2623f9)
-
-3. NAND (Инвертированное Логическое умножение(НЕ И)):
-
-![image](https://github.com/ManualCode/DA-in-GameDev-lab4/assets/120582775/f9057b84-6518-48b5-b757-720dec2f9e0e)
-
-4. XOR (Исключающая Логическая сумма((ИЛИ) и (НЕ И))):
-
-![image](https://github.com/ManualCode/DA-in-GameDev-lab4/assets/120582775/10a39ef5-f540-4f6a-88d8-bfb961f473b3)
+Будем менять параметры в файле rollerball_config.yaml:
+![image](https://github.com/ManualCode/DA-in-GameDev5/assets/120582775/bb61e022-fdd3-4763-9a98-02b273177b03)
+1. learning_rate - параметр, который регулирует скорость, с которой модель адаптируется к данным в процессе обучения. При слишком маленьком значение обучение становится стабильным, но его темп замедляется. При слишком большом learning_rate процесс обучение стал неравномерным.
+2. num_epoch - параметр, отвечающий за количество эпох обучения. Увеличение значения приводит к повышению точности обучения, но значительно увеличивается времемя, необходимое для обучения ML-агента.
+3. buffer_size - параметр, который определяет кол-во опыта, который необходимо собрать перед обновлением модели политики. При увеличении параметра обновления становятся более стабильным.
 
 ## Задание 3
-### Визуализировать работу персептрона с помощью физуальной модели на сцене Unity.
+### Приведите примеры, для каких игровых задачи и ситуаций могут использоваться примеры 1 и 2 с ML-Agent’ом. В каких случаях проще использовать ML-агент, а не писать программную реализацию решения?
+
 Ход работы: 
-- Создал сцену в Unity, добавил плоскость и несколько кубов;
-- Модефицировал код в Perceptron.cs и накинул на кубы;
-- Продублировал сцену на каждую логическую операцию;
-
-Код дописанный в Perceptron.cs:
-Для каждой логической операции нужно менять условие (test == ?).
-```C#
- private void OnCollisionEnter(Collision collision)
- {
-     var test = CalcOutput(0, 0);
-     if (test == 0 && collision.gameObject.tag == "Cube2" && collision.gameObject.tag != "Floor")
-     {
-         collision.gameObject.GetComponent<Renderer>().material.color = Color.green;
-         gameObject.GetComponent<Renderer>().material.color = Color.green;
-     }
-     else if (collision.gameObject.tag == "Cube2" && collision.gameObject.tag != "Floor")
-     {
-         collision.gameObject.GetComponent<Renderer>().material.color = Color.red;
-         gameObject.GetComponent<Renderer>().material.color = Color.red;
-     };
-     test = CalcOutput(0, 1);
-     if (test == 0 && collision.gameObject.tag == "Cube4" && collision.gameObject.tag != "Floor")
-     {
-         collision.gameObject.GetComponent<Renderer>().material.color = Color.green;
-         gameObject.GetComponent<Renderer>().material.color = Color.green;
-     }
-     else if (collision.gameObject.tag == "Cube4" && collision.gameObject.tag != "Floor")
-     {
-         collision.gameObject.GetComponent<Renderer>().material.color = Color.red;
-         gameObject.GetComponent<Renderer>().material.color = Color.red;
-     };
-     test = CalcOutput(1, 0);
-     if (test == 0 && collision.gameObject.tag == "Cube6" && collision.gameObject.tag != "Floor")
-     {
-         collision.gameObject.GetComponent<Renderer>().material.color = Color.green;
-         gameObject.GetComponent<Renderer>().material.color = Color.green;
-     }
-     else if (collision.gameObject.tag == "Cube6" && collision.gameObject.tag != "Floor")
-     {
-         collision.gameObject.GetComponent<Renderer>().material.color = Color.red;
-         gameObject.GetComponent<Renderer>().material.color = Color.red;
-     };
-     test = CalcOutput(1, 1);
-     if (test == 1 && collision.gameObject.tag == "Cube8" && collision.gameObject.tag != "Floor")
-     {
-         collision.gameObject.GetComponent<Renderer>().material.color = Color.green;
-         gameObject.GetComponent<Renderer>().material.color = Color.green;
-     }
-     else if (collision.gameObject.tag == "Cube8" && collision.gameObject.tag != "Floor")
-     {
-         collision.gameObject.GetComponent<Renderer>().material.color = Color.red;
-         gameObject.GetComponent<Renderer>().material.color = Color.red;
-     };
- }
-```
-
-1, 2, 3. Тест OR, AND, NAND:
-Не имеет смысла втавлять отдельные gif-ки на каждую логтческую операцию, т.к результат одинаков
-
-![nteTesRRGt_edited](https://github.com/ManualCode/DA-in-GameDev-lab4/assets/120582775/3697d0cc-16aa-4274-b12c-7007d5b01b7d)
-4. Тест XOR:
-
-![XOR](https://github.com/ManualCode/DA-in-GameDev-lab4/assets/120582775/b71e1e83-3ad5-4ab6-b1ad-38363766f873)
+1. ML-Agent может использоваться для NPC в игре. Например, их передвижение по игровому миру, чтобы они шли ровно по нужной дороге, не врезались в объекты и знали как обойти препятствия.
+   К прмеру любой моб из того же Minecraft'a
+2. ML-Agent может быть полезен для разработки интерактивных NPC, который следует от одной точки к другой по определённому маршруту и важно чтобы он искал способ обойти его. Также можно подметить, что такой агент был бы полезен для создания противников в гонках со строго заданным маршрутом
+3. Программная реализация совсем не адаптивна, в отличие от ML Агента, поэтому ML Агент стоит использовать в тех случаях, где игровая ситуация постоянно меняется. Программная реализация слишком ненадежна, и может неадекватно реагировать на изменения игровой ситуации.
 
 ## Выводы
-В ходе данной лабораторной работы я познакомился с персептроном. Реализовал и визуализировал его в Unity, а так же сделал выводы о корректности его работы на примере функций OR, AND, NAND, XOR.
+В этой лабораторной работе мы взаимодействовали с ML-Agent в Unity, познавая процесс обучения объектов. Экспериментировали с различными значениями параметров, стремясь понять, как они влияют на обучение. В ходе лабораторной работы успешно интегрировали ML-Agent
 
 | Plugin | README |
 | ------ | ------ |
